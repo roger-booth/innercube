@@ -12,7 +12,10 @@ type Face [8]Color
 
 type Edge [12]*Color
 
-type Cube map[Color]Face
+type Cube struct {
+    faceMap map[Color]Face
+    edgeMap map[Color]Edge
+}    
 
 type ThreeDTransformer struct {
     faceRing ring.Ring
