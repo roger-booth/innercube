@@ -37,5 +37,6 @@ func main() {
     *cube1.edgeMap["red"][1] = "green"
     fmt.Println(cube1.faceMap["red"][0])
     fmt.Println(cube1.faceMap["red"][1])
-    fmt.Println(cube1.faceMap["red"][2]
+    fmt.Println(cube1.faceMap["red"][2])
+    fmt.Println(*cube1.edgeMap["red"][2])
 }
