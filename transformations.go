@@ -20,7 +20,7 @@ var edgesForFace = map[Color][]Color{
 	"green":  {"orange", "white", "red", "yellow"},
 }
 
-var edgePos = [...]int{0, 1, 2, 4, 3, 2, 4, 5, 6, 6, 7, 0}
+var edgePos = [...]int{0, 7, 6, 4, 3, 2, 6, 5, 4, 2, 1, 0}
 
 type Face [8]Color
 
