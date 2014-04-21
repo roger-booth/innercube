@@ -17,6 +17,8 @@ var edgesForFace = map[Color][]Color{
 	"green":  {"orange", "white", "red", "yellow"},
 }
 
+var edgePos = [...]int{0, 1, 2, 4, 3, 2, 4, 5, 6, 6, 7, 0}
+
 type Face [8]Color
 
 type Edge [12]*Color
@@ -24,6 +26,26 @@ type Edge [12]*Color
 type Cube struct {
 	faceMap map[Color]*Face
 	edgeMap map[Color]Edge
+}
+
+func New() (*Cube, error) {
+	newFaceMap := make(map[Color]*Face)
+	newEdgeMap := make(map[Color]Edge)
+	for _, color := range colors {
+		newFaceMap[color] = &Face{color, color, color, color, color, color, color, color}
+	}
+	i := 0
+	for _, faceColor := range colors {
+		var newEdge Edge
+		for _, edgeColor := range edgesForFace[faceColor] {
+			newEdge[i] = &newFaceMap[edgeColor][edgePos[i]]
+			newEdge[i+1] = &newFaceMap[edgeColor][edgePos[i+1]]
+			newEdge[i+2] = &newFaceMap[edgeColor][edgePos[i+2]]
+			i += 3
+		}
+		newEdgeMap[faceColor] = newEdge
+	}
+	return &Cube{newFaceMap, newEdgeMap}, nil
 }
 
 type ThreeDTransformer struct {
