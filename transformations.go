@@ -31,6 +31,8 @@ type Cube struct {
 	edgeMap map[Color]Edge
 }
 
+type Entanglement [8]*Cube
+
 func NewCube() (*Cube, error) {
 	newFaceMap := make(map[Color]*Face)
 	newEdgeMap := make(map[Color]Edge)
@@ -56,19 +58,25 @@ func NewCube() (*Cube, error) {
 	return &Cube{newFaceMap, newEdgeMap}, nil
 }
 
+func NewEntanglement() (*Entanglement, error) {
+        var newEntanglement Entanglement
+	for i:=0; i<8; i++{
+		newEntanglement[i], _ = NewCube();
+	}
+	return &newEntanglement, nil
+}
+
 type ThreeDTransformer struct {
 	faceRing ring.Ring
 	edgeRing ring.Ring
 }
 
 func main() {
-	cube1,_ := NewCube()
-
-	//fmt.Println(cube1)
-	fmt.Println(cube1.faceMap["red"][1])
-	fmt.Println(cube1.faceMap["red"][2])
-	fmt.Println(*cube1.edgeMap["red"][2])
-	fmt.Println(*cube1.edgeMap["red"][3])
-	fmt.Println(*cube1.edgeMap["red"][8])
-	fmt.Println(*cube1.edgeMap["red"][11])
+	entanglement1,_ := NewEntanglement()
+	fmt.Println(entanglement1[0].faceMap["red"][1])
+	fmt.Println(entanglement1[0].faceMap["red"][2])
+	fmt.Println(*entanglement1[0].edgeMap["red"][2])
+	fmt.Println(*entanglement1[0].edgeMap["red"][3])
+	fmt.Println(*entanglement1[0].edgeMap["red"][8])
+	fmt.Println(*entanglement1[0].edgeMap["red"][11])
 }
