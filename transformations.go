@@ -23,5 +23,9 @@ type ThreeDTransformer struct {
 }
 
 func main() {
-
+    cube1 := new(Cube)
+    face1 := Face {"red","red","red","red","red","red","red","red"}
+    faceMap1 := make(map[Color]Face)
+    faceMap1["red"] = face1
+    cube1.faceMap = faceMap1
 }
