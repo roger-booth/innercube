@@ -1,3 +1,6 @@
+// Copyright or whatever, Roger Booth (roger.booth@gmail.com)
+// In the unlikely event that you find this code useful,
+// feel free to provide attribution :)
 package main
 
 import (
