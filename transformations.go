@@ -10,8 +10,8 @@ type Color string
 var colors = [...]Color{"white", "blue", "red", "yellow", "orange", "green"}
 var edgesForFace = map[Color][]Color{
 	"white":  {"red", "green", "orange", "blue"},
-	"red":    {"blue", "yellow", "green", "white"},
 	"blue":   {"white", "orange", "yellow", "red"},
+	"red":    {"blue", "yellow", "green", "white"},
 	"yellow": {"green", "red", "blue", "orange"},
 	"orange": {"yellow", "blue", "white", "green"},
 	"green":  {"orange", "white", "red", "yellow"},
