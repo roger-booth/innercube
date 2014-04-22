@@ -67,35 +67,38 @@ func NewEntanglement() (*Entanglement, error) {
 }
 
 type ThreeDTransformer struct {
-	faceRing ring.Ring
-	edgeRing ring.Ring
+	faceRing *ring.Ring
+	edgeRing *ring.Ring
 }
 
 func ThreeDRotate(ent *Entanglement, cubeId int, face Color, direction int) error {
-        var trx ThreeDTransformer
+        newFaceRing := ring.New(8)
+        newEdgeRing := ring.New(12)
+        trx := ThreeDTransformer{
+		newFaceRing,newEdgeRing}
 	for _, faceColor := range ent[cubeId].faceMap[face] {
 		trx.faceRing.Value = faceColor
-		trx.faceRing.Next()
+		trx.faceRing = trx.faceRing.Next()
 	}
 	for _, edgeColorPtr := range ent[cubeId].edgeMap[face] {
 		trx.edgeRing.Value = *edgeColorPtr
-		trx.edgeRing.Next()
+		trx.edgeRing = trx.edgeRing.Next()
 	}
 	
-	trx.faceRing.Move(2*direction)
-	trx.edgeRing.Move(3*direction)
+	trx.faceRing = trx.faceRing.Move(2*direction)
+	trx.edgeRing = trx.edgeRing.Move(3*direction)
 	
 	for i, _ := range ent[cubeId].faceMap[face] {
 	        if v,ok := trx.faceRing.Value.(Color); ok {
 		    ent[cubeId].faceMap[face][i] = v
 		}
-		trx.faceRing.Next()
+		trx.faceRing = trx.faceRing.Next()
 	}
 	for i, _ := range ent[cubeId].edgeMap[face] {
 	        if v,ok := trx.edgeRing.Value.(Color); ok {
 		    *ent[cubeId].edgeMap[face][i] = v
 		}	
-		trx.edgeRing.Next()
+		trx.edgeRing = trx.edgeRing.Next()
 	}
 
         return nil
@@ -109,7 +112,7 @@ func main() {
 	fmt.Println(*entanglement1[0].edgeMap["red"][3])
 	fmt.Println(*entanglement1[0].edgeMap["red"][8])
 	fmt.Println(*entanglement1[0].edgeMap["red"][11])
-	err := ThreeDRotate(entanglement1, 1, "red", 1)
+	err := ThreeDRotate(entanglement1, 0, "red", 1)
 	fmt.Println(err)
 	fmt.Println(entanglement1[0].faceMap["red"][1])
 	fmt.Println(entanglement1[0].faceMap["red"][2])
@@ -117,4 +120,3 @@ func main() {
 	fmt.Println(*entanglement1[0].edgeMap["red"][3])
 	fmt.Println(*entanglement1[0].edgeMap["red"][8])
 	fmt.Println(*entanglement1[0].edgeMap["red"][11])	
-}
