@@ -81,6 +81,23 @@ func ThreeDRotate(ent *Entanglement, cubeId int, face Color, direction int) erro
 		trx.edgeRing.Value = *edgeColorPtr
 		trx.edgeRing.Next()
 	}
+	
+	trx.faceRing.Move(2*direction)
+	trx.edgeRing.Move(3*direction)
+	
+	for i, _ := range ent[cubeId].faceMap[face] {
+	        if v,ok := trx.faceRing.Value.(Color); ok {
+		    ent[cubeId].faceMap[face][i] = v
+		}
+		trx.faceRing.Next()
+	}
+	for i, _ := range ent[cubeId].edgeMap[face] {
+	        if v,ok := trx.edgeRing.Value.(Color); ok {
+		    *ent[cubeId].edgeMap[face][i] = v
+		}	
+		trx.edgeRing.Next()
+	}
+
         return nil
 }
 
