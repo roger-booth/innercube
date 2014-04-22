@@ -71,6 +71,19 @@ type ThreeDTransformer struct {
 	edgeRing ring.Ring
 }
 
+func ThreeDRotate(ent *Entanglement, cubeId int, face Color, direction int) error {
+        var trx ThreeDTransformer
+	for _, faceColor := range ent[cubeId].faceMap[face] {
+		trx.faceRing.Value = faceColor
+		trx.faceRing.Next()
+	}
+	for _, edgeColorPtr := range ent[cubeId].edgeMap[face] {
+		trx.edgeRing.Value = *edgeColorPtr
+		trx.edgeRing.Next()
+	}
+        return nil
+}
+
 func main() {
 	entanglement1,_ := NewEntanglement()
 	fmt.Println(entanglement1[0].faceMap["red"][1])
@@ -79,4 +92,6 @@ func main() {
 	fmt.Println(*entanglement1[0].edgeMap["red"][3])
 	fmt.Println(*entanglement1[0].edgeMap["red"][8])
 	fmt.Println(*entanglement1[0].edgeMap["red"][11])
+	err := ThreeDRotate(entanglement1, 1, "red", 1)
+	fmt.Println(err)
 }
