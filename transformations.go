@@ -1,6 +1,6 @@
-// Copyright or whatever, Roger Booth (roger.booth@gmail.com)
-// In the unlikely event that you find this code useful,
-// feel free to provide attribution :)
+// Copyright Roger Booth (roger.booth@gmail.com)
+// In the event that you find this code useful, feel free to provide attribution :)
+ 
 package main
 
 import (
@@ -20,6 +20,7 @@ var edgesForFace = map[Color][]Color{
 	"green":  {"orange", "white", "red", "yellow"},
 }
 
+// Based on the coordinate system I discovered in 1984
 var edgePos = [...]int{0, 7, 6, 4, 3, 2, 6, 5, 4, 2, 1, 0}
 
 type Face [8]Color
