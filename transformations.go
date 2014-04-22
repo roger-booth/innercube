@@ -111,4 +111,10 @@ func main() {
 	fmt.Println(*entanglement1[0].edgeMap["red"][11])
 	err := ThreeDRotate(entanglement1, 1, "red", 1)
 	fmt.Println(err)
+	fmt.Println(entanglement1[0].faceMap["red"][1])
+	fmt.Println(entanglement1[0].faceMap["red"][2])
+	fmt.Println(*entanglement1[0].edgeMap["red"][2])
+	fmt.Println(*entanglement1[0].edgeMap["red"][3])
+	fmt.Println(*entanglement1[0].edgeMap["red"][8])
+	fmt.Println(*entanglement1[0].edgeMap["red"][11])	
 }
