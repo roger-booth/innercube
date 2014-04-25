@@ -6,11 +6,20 @@ package main
 import (
 	"container/ring"
 	"fmt"
+	"time"
 )
 
 type Color string
 
 var colors = [...]Color{"white", "blue", "red", "yellow", "orange", "green"}
+var intForColor = map[Color]int {
+	"white": 0,
+	"blue": 1,
+	"red": 2,
+	"yellow": 3,
+	"orange": 4,
+	"green": 5
+}
 var edgesForFace = map[Color][]Color{
 	"white":  {"red", "green", "orange", "blue"},
 	"blue":   {"white", "orange", "yellow", "red"},
@@ -22,6 +31,19 @@ var edgesForFace = map[Color][]Color{
 
 // Based on the coordinate system I discovered in 1984
 var edgePos = [...]int{0, 7, 6, 4, 3, 2, 6, 5, 4, 2, 1, 0}
+
+// Pair cube faces by front-to-front projection
+// Eight cubes X six faces
+var straightProjection = [...][...]int {
+	{1,3,4,1,4,3},
+	{0,2,5,0,5,2},
+	{3,1,6,3,6,1},
+	{2,0,7,2,7,0},
+	{5,7,0,5,0,7},
+	{4,6,1,4,1,6},
+	{7,5,2,7,2,5},
+	{6,4,3,6,3,4}
+}
 
 type Face [8]Color
 
@@ -72,52 +94,94 @@ type ThreeDTransformer struct {
 	edgeRing *ring.Ring
 }
 
-func ThreeDRotate(ent *Entanglement, cubeId int, face Color, direction int) error {
+func ThreeDRotate(op ThreeDOperation) error {
+	
         newFaceRing := ring.New(8)
         newEdgeRing := ring.New(12)
         trx := ThreeDTransformer{
 		newFaceRing,newEdgeRing}
-	for _, faceColor := range ent[cubeId].faceMap[face] {
+	for _, faceColor := range op.ent[op.cubeId].faceMap[op.face] {
 		trx.faceRing.Value = faceColor
 		trx.faceRing = trx.faceRing.Next()
 	}
-	for _, edgeColorPtr := range ent[cubeId].edgeMap[face] {
+	for _, edgeColorPtr := range op.ent[op.cubeId].edgeMap[op.face] {
 		trx.edgeRing.Value = *edgeColorPtr
 		trx.edgeRing = trx.edgeRing.Next()
 	}
-	
-	trx.faceRing = trx.faceRing.Move(2*direction)
-	trx.edgeRing = trx.edgeRing.Move(3*direction)
-	
-	for i, _ := range ent[cubeId].faceMap[face] {
+
+	trx.faceRing = trx.faceRing.Move(2*op.direction)
+	trx.edgeRing = trx.edgeRing.Move(3*op.direction)
+
+	for i, _ := range ent[op.cubeId].faceMap[op.face] {
 	        if v,ok := trx.faceRing.Value.(Color); ok {
-		    ent[cubeId].faceMap[face][i] = v
+		    op.ent[op.cubeId].faceMap[op.face][i] = v
 		}
 		trx.faceRing = trx.faceRing.Next()
 	}
-	for i, _ := range ent[cubeId].edgeMap[face] {
+	for i, _ := range ent[op.cubeId].edgeMap[op.face] {
 	        if v,ok := trx.edgeRing.Value.(Color); ok {
-		    *ent[cubeId].edgeMap[face][i] = v
+		    *op.ent[cubeId].edgeMap[face][i] = v
 		}	
 		trx.edgeRing = trx.edgeRing.Next()
 	}
 
-        return nil
+    return nil
+}
+
+func Sister(cubeId int, face Color) (sisterCubeId int, sisterFace Color){
+	sisterCubeId = straightProjection[cubeId][intForColor[Color]]
+	sisterFace = face
+}
+	
+type ThreeDOperation struct {
+	ent *Entanglement
+	cubeId int
+	face Color
+	direction int
+	primary bool
+}
+
+func SplitMessage(op ThreeDOperation, opchan channel ThreeDOperation) error {
+	sisterCubeId, sisterFace = Sister(op.CubeId, op.face)
+	op.primary = false
+	opchan <- op
+	var sisterOp = ThreeDOperation {op.ent, sisterCubeId, sisterFace,op.direction, false}
+	opchan <- sisterOp
+}
+
+func countDown(count chan int) {
+	for i := 20 ; i >= 0 ; i-- {
+		count <- i
+		time.Sleep(1000000000)
+	}
+}
+
+func selfDestruct() {
+	fmt.Printf("Self destruct feature not yet implemented\n")
 }
 
 func main() {
 	entanglement1,_ := NewEntanglement()
-	fmt.Println(entanglement1[0].faceMap["red"][1])
-	fmt.Println(entanglement1[0].faceMap["red"][2])
-	fmt.Println(*entanglement1[0].edgeMap["red"][2])
-	fmt.Println(*entanglement1[0].edgeMap["red"][3])
-	fmt.Println(*entanglement1[0].edgeMap["red"][8])
-	fmt.Println(*entanglement1[0].edgeMap["red"][11])
-	err := ThreeDRotate(entanglement1, 0, "red", 1)
-	fmt.Println(err)
-	fmt.Println(entanglement1[0].faceMap["red"][1])
-	fmt.Println(entanglement1[0].faceMap["red"][2])
-	fmt.Println(*entanglement1[0].edgeMap["red"][2])
-	fmt.Println(*entanglement1[0].edgeMap["red"][3])
-	fmt.Println(*entanglement1[0].edgeMap["red"][8])
-	fmt.Println(*entanglement1[0].edgeMap["red"][11])	
+	operations := make(chan ThreeDOperation)
+	count := make(chan int)
+    go player1(operations)
+	go player2(operations)
+	go countDown(count)
+	for {
+		select {
+			case o := <- operations:
+			    if o.primary {
+					SplitMessage(o, operations)
+				} else {
+					ThreeDRotate(o)
+				}
+			
+			case i := <- count:
+				if 0 == i {
+					selfDestruct()
+					return
+				}
+				fmt.Printf("%d seconds remaining\n", i)
+		}
+	}
+}
