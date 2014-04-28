@@ -164,7 +164,7 @@ func main() {
 	entanglement1,_ := NewEntanglement()
 	operations := make(chan ThreeDOperation)
 	count := make(chan int)
-    go player1(operations)
+        go player1(operations)
 	go player2(operations)
 	go countDown(count)
 	for {
