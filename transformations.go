@@ -156,8 +156,13 @@ func countDown(count chan int) {
 	}
 }
 
-func takeSample(*Entanglement) {
-	fmt.Printf("takeSample feature not yet implemented\n")
+func takeSample(ent *Entanglement) {
+	fmt.Println(ent[0].faceMap["red"][1])
+	fmt.Println(ent[0].faceMap["red"][2])
+	fmt.Println(*ent[0].edgeMap["red"][2])
+	fmt.Println(*ent[0].edgeMap["red"][3])
+	fmt.Println(*ent[0].edgeMap["red"][8])
+	fmt.Println(*ent[0].edgeMap["red"][11])
 }
 
 func main() {
