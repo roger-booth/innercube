@@ -187,6 +187,7 @@ func main() {
 	operations_p := make(chan ThreeDOperation)
 	operations_s := make(chan ThreeDOperation)
 	count := make(chan int)
+	takeSample(entanglement1)
 	go countDown(count)
 	go player1(operations_p, entanglement1)
 	//go player2(operations_p, entanglement1)
