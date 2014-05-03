@@ -156,8 +156,8 @@ func countDown(count chan int) {
 	}
 }
 
-func selfDestruct() {
-	fmt.Printf("Self destruct feature not yet implemented\n")
+func takeSample(*Entanglement) {
+	fmt.Printf("takeSample feature not yet implemented\n")
 }
 
 func main() {
@@ -178,7 +178,7 @@ func main() {
 			
 			case i := <- count:
 				if 0 == i {
-					selfDestruct()
+					takeSample(entanglement1)
 					return
 				}
 				fmt.Printf("%d seconds remaining\n", i)
