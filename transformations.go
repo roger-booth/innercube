@@ -1,6 +1,3 @@
-// Copyright Roger Booth (roger.booth@gmail.com)
-// In the event that you find this code useful, feel free to provide attribution :)
- 
 package main
 
 import (
@@ -18,7 +15,7 @@ var intForColor = map[Color]int {
 	"red": 2,
 	"yellow": 3,
 	"orange": 4,
-	"green": 5
+	"green": 5,
 }
 var edgesForFace = map[Color][]Color{
 	"white":  {"red", "green", "orange", "blue"},
@@ -34,7 +31,7 @@ var edgePos = [...]int{0, 7, 6, 4, 3, 2, 6, 5, 4, 2, 1, 0}
 
 // Pair cube faces by front-to-front projection
 // Eight cubes X six faces
-var straightProjection = [...][...]int {
+var straightProjection = [8][6]int {
 	{1,3,4,1,4,3},
 	{0,2,5,0,5,2},
 	{3,1,6,3,6,1},
@@ -42,7 +39,7 @@ var straightProjection = [...][...]int {
 	{5,7,0,5,0,7},
 	{4,6,1,4,1,6},
 	{7,5,2,7,2,5},
-	{6,4,3,6,3,4}
+	{6,4,3,6,3,4},
 }
 
 type Face [8]Color
@@ -95,7 +92,6 @@ type ThreeDTransformer struct {
 }
 
 func ThreeDRotate(op ThreeDOperation) error {
-	
         newFaceRing := ring.New(8)
         newEdgeRing := ring.New(12)
         trx := ThreeDTransformer{
@@ -112,15 +108,15 @@ func ThreeDRotate(op ThreeDOperation) error {
 	trx.faceRing = trx.faceRing.Move(2*op.direction)
 	trx.edgeRing = trx.edgeRing.Move(3*op.direction)
 
-	for i, _ := range ent[op.cubeId].faceMap[op.face] {
+	for i, _ := range op.ent[op.cubeId].faceMap[op.face] {
 	        if v,ok := trx.faceRing.Value.(Color); ok {
 		    op.ent[op.cubeId].faceMap[op.face][i] = v
 		}
 		trx.faceRing = trx.faceRing.Next()
 	}
-	for i, _ := range ent[op.cubeId].edgeMap[op.face] {
+	for i, _ := range op.ent[op.cubeId].edgeMap[op.face] {
 	        if v,ok := trx.edgeRing.Value.(Color); ok {
-		    *op.ent[cubeId].edgeMap[face][i] = v
+		    *op.ent[op.cubeId].edgeMap[op.face][i] = v
 		}	
 		trx.edgeRing = trx.edgeRing.Next()
 	}
@@ -129,10 +125,11 @@ func ThreeDRotate(op ThreeDOperation) error {
 }
 
 func Sister(cubeId int, face Color) (sisterCubeId int, sisterFace Color){
-	sisterCubeId = straightProjection[cubeId][intForColor[Color]]
+	sisterCubeId = straightProjection[cubeId][intForColor[face]]
 	sisterFace = face
+	return
 }
-	
+
 type ThreeDOperation struct {
 	ent *Entanglement
 	cubeId int
@@ -141,12 +138,14 @@ type ThreeDOperation struct {
 	primary bool
 }
 
-func SplitMessage(op ThreeDOperation, opchan channel ThreeDOperation) error {
-	sisterCubeId, sisterFace = Sister(op.CubeId, op.face)
+
+func SplitMessage(op ThreeDOperation, opchan chan ThreeDOperation) {
+	sisterCubeId, sisterFace := Sister(op.cubeId, op.face)
 	op.primary = false
 	opchan <- op
 	var sisterOp = ThreeDOperation {op.ent, sisterCubeId, sisterFace,op.direction, false}
 	opchan <- sisterOp
+	return
 }
 
 func countDown(count chan int) {
@@ -167,7 +166,7 @@ func takeSample(ent *Entanglement) {
 
 func player1(blab chan ThreeDOperation, ent *Entanglement) {
 	var sim1 = [...]ThreeDOperation {
-	    {ent, 0, "red", 1, true}
+	    {ent, 0, "red", 1, true},
         }
 	for i := range sim1 {
 		blab <- sim1[i]
@@ -177,7 +176,7 @@ func player1(blab chan ThreeDOperation, ent *Entanglement) {
 
 func player2(blab chan ThreeDOperation, ent *Entanglement) {
 	var sim2 = [...]ThreeDOperation {
-	    {ent, 2, "blue", 1, true}
+	    {ent, 2, "blue", 1, true},
         }
 	for i := range sim2 {
 		blab <- sim2[i]
@@ -200,7 +199,7 @@ func main() {
 				} else {
 					ThreeDRotate(o)
 				}
-			
+
 			case i := <- count:
 				if 0 == i {
 					takeSample(entanglement1)
