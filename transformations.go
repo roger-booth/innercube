@@ -165,6 +165,20 @@ func takeSample(ent *Entanglement) {
 	fmt.Println(*ent[0].edgeMap["red"][11])
 }
 
+func player1(blab chan ThreeDOperation) {
+	for i := range sim1 {
+		blab <- sim1[i]
+		time.Sleep(1000000)
+	}
+}
+
+func player2(blab chan ThreeDOperation) {
+	for i := range sim2 {
+		blab <- sim2[i]
+		time.Sleep(1000000)
+	}
+}
+
 func main() {
 	entanglement1,_ := NewEntanglement()
 	operations := make(chan ThreeDOperation)
