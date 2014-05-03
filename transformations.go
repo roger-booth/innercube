@@ -190,7 +190,7 @@ func main() {
 	takeSample(entanglement1)
 	go countDown(count)
 	go player1(operations_p, entanglement1)
-	//go player2(operations_p, entanglement1)
+	go player2(operations_p, entanglement1)
 
 	for {
 		select {
