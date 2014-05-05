@@ -15,4 +15,4 @@ Milestone reached 5/3/2014<br>
  
 Next milestone<br>
   3D display of the current model in the browser.<br>
-    Will use AngularJS and HTML5 Canvas<br>
+    Will use AngularJS and WebGL<br>
