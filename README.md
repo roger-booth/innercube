@@ -19,4 +19,5 @@ Next milestone<br>
   Initially, create an entanglement, and also create a map to associate it with nine<br>
     entanglement operators (eight 3D, one 4D)<br>
   Users continue to be mapped to the available entanglment until it is full.<br>
-  When the tenth user has been added, create a new entanglement.<br>
+  When the tenth user has been added, create a new entanglement and add empty rows to<br>
+    associated cubes with new users.
