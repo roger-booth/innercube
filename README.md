@@ -15,7 +15,7 @@ Milestone reached 5/3/2014<br>
  
 Next milestone<br>
   3D display of the current model in the browser.<br>
-    Will use AngularJS and the Cuber from Chrome Cube Labs<br>
+    Will use ReactJS and, possibly, the Cuber from Chrome Cube Labs<br>
   Initially, create an entanglement, and also create a map to associate it with nine<br>
     users (eight users operate 3D cubes, one user performs "4D" operations)<br>
   Users continue to be mapped to the available entanglment until it is full.<br>
