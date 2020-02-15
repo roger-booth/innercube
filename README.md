@@ -14,4 +14,4 @@ Milestone reached 5/3/2014<br>
  Results of the rotation are unloaded back into the affected cubes.<br>
  
 Next milestone<br>
-  Levitating cube for TiltFive.  Operated by voice commands via Bizby.
+  Levitating cube for TiltFive.  Operated by voice commands via Bixby.
