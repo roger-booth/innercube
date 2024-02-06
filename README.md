@@ -12,6 +12,3 @@ Milestone reached 5/3/2014<br>
  Secondary operations are performed by loading the face and edges of the affected<br>
  cubes into a ring structure, where rotations are performed.<br>
  Results of the rotation are unloaded back into the affected cubes.<br>
- 
-Next milestone<br>
-  Levitating cube for TiltFive.  Operated by voice commands via Bixby.
